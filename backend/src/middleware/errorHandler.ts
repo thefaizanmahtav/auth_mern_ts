@@ -18,6 +18,7 @@ const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
 
     if (error instanceof z.ZodError) {
         handleZodError(res, error)
+        next()
     }
 
     console.log(`PATH: ${req.path}`, error);

@@ -1,21 +1,21 @@
 import mongoose from "mongoose";
-import verificaltionType from "../constant/verificationCodeTypes";
+import verificationType from "../constant/verificationCodeTypes";
 
 
-export interface verificationCodeDocuments extends mongoose.Document {
+export interface VerificationCodeDocuments extends mongoose.Document {
     userId: mongoose.Types.ObjectId,
-    type: verificaltionType,
+    type: verificationType,
     createdAt: Date,
-    expireAt: Date
+    expiresAt: Date
 }
 
-const verificaltionSchema = new mongoose.Schema<verificationCodeDocuments>({
+const verificaltionSchema = new mongoose.Schema<VerificationCodeDocuments>({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
     type: { type: String, required: true },
     createdAt: { type: Date, required: true },
-    expireAt: { type: Date, required: true }
+    expiresAt: { type: Date, required: true }
 })
 
-const verificaltionModel = mongoose.model<verificationCodeDocuments>("verificationCode", verificaltionSchema, "verification_Code")
+const verificaltionModel = mongoose.model<VerificationCodeDocuments>("VerificationCode", verificaltionSchema, "Verification_Code")
 
 export default verificaltionModel;
