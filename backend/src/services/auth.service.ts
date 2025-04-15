@@ -5,6 +5,8 @@ import sessionModel from "../models/session.model"
 import jwt from "jsonwebtoken"
 import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constant/env"
 import verificaltionModel from "../models/verification.model"
+import appAssert from "../utils/appAssert"
+import { CONFLICT } from "../constant/http"
 
 export type createAccountParams = {
     email: string,
@@ -20,9 +22,13 @@ export const createAccount = async (data: createAccountParams) => {
         email: data.email
     })
 
-    if (existingUser) {
-        throw new Error("user alredy exists")
-    }
+    appAssert(
+        !existingUser, CONFLICT, "Email alrady in use"
+    )
+
+    // if (existingUser) {
+    //     throw new Error("user alredy exists")
+    // }
 
     // create user
 
@@ -36,7 +42,7 @@ export const createAccount = async (data: createAccountParams) => {
     const verificationCode = await verificaltionModel.create({
         userId: user._id,
         type: verificaltionType.emailVerification,
-        createdAt:Date.now(),
+        createdAt: Date.now(),
         expiresAt: oneYearFromNow(),
     })
 
