@@ -16,6 +16,6 @@ const verificaltionSchema = new mongoose.Schema<VerificationCodeDocuments>({
     expiresAt: { type: Date, required: true }
 })
 
-const verificaltionModel = mongoose.model<VerificationCodeDocuments>("VerificationCode", verificaltionSchema, "Verification_Code")
+const verificaltionCodeModel = mongoose.model<VerificationCodeDocuments>("VerificationCode", verificaltionSchema, "Verification_Code")
 
-export default verificaltionModel;
+export default verificaltionCodeModel;
