@@ -8,8 +8,8 @@ export type refershTokenPayload = {
 }
 
 export type accessTokenPayload = {
-    sessionId: SessionDocument["_id"]
-    userId: userDocument["_id"]
+    sessionId: SessionDocument["_id"],
+    userId: userDocument["_id"] 
 }
 
 type singOptionsAndSecret = SignOptions & {
@@ -57,6 +57,8 @@ export const verifyToken = <TPayload extends object = accessTokenPayload>(
             payload
         }
     } catch (error: any) {
-        throw new Error(error.message)
+        return {
+            error: error.message
+        }
     }
 }

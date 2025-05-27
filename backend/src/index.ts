@@ -5,8 +5,11 @@ import connectToDatabase from "./config/db";
 import { NODE_ENV, PORT, APP_ORIGIN } from "./constant/env";
 import cookieParser from "cookie-parser";
 import errorHandler from "./middleware/errorHandler";
-import { BAD_REQUEST, OK } from "./constant/http";
+import { OK } from "./constant/http";
 import authRoutes from "./routes/auth.routs";
+import authenticate from "./middleware/authenticate";
+import userRoutes from "./routes/user.routs";
+import sessionRoutes from "./routes/session.routs";
 
 const app = express();
 app.use(express.json());
@@ -27,7 +30,14 @@ app.get("/", (req, res, next) => {
     })
 })
 
+// auth routes
 app.use("/auth", authRoutes)
+
+// user routes
+app.use("/user", authenticate, userRoutes)
+
+// session routes
+app.use("/sessions", authenticate, sessionRoutes)
 
 app.use(errorHandler);
 

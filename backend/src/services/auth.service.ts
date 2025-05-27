@@ -4,11 +4,13 @@ import { fiveMinutesAgo, ONE_DAY_IN_MS, oneHourFromNow, oneYearFromNow, thirtyDa
 import sessionModel from "../models/session.model"
 import verificaltionCodeModel from "../models/verification.model"
 import appAssert from "../utils/appAssert"
-import { CONFLICT, INTERNAL_SERVER_ERROR, TOO_MANY_REQUESTS, UNAUTHORIZED } from "../constant/http"
+import { CONFLICT, INTERNAL_SERVER_ERROR, NOT_FOUND, TOO_MANY_REQUESTS, UNAUTHORIZED } from "../constant/http"
 import { refershTokenPayload, refreshTokenSingOptions, signToken, verifyToken } from "../utils/jwt"
 import { sendMail } from "../utils/sendMail"
 import { getPasswordResetTemplate, getVerifyEmailTemplate } from "../utils/emailTemplates"
 import { APP_ORIGIN } from "../constant/env"
+import verificationType from "../constant/verificationCodeTypes"
+import { hashValue } from "../utils/bcrypt"
 
 export type createAccountParams = {
     email: string,
@@ -259,4 +261,46 @@ export const sendPasswordResetEmail = async (email: string) => {
         url,
         emailId: data.id,
     }
+}
+
+type ResetPasswordParams = {
+    password: string,
+    verificationCode: string
+}
+
+export const resetPassword = async ({password, verificationCode}: ResetPasswordParams) => {
+    // get the verification code
+
+    const ValidCode = await verificaltionCodeModel.findOne({
+        _id: verificationCode,
+        type: verificationType.passwordReset,
+        expiresAt: { $gt: Date.now() }
+    })
+
+    appAssert(ValidCode, NOT_FOUND, "Invalid or expired verification code")
+
+    // update the user password
+
+    const updatedUser = await userModels.findByIdAndUpdate(
+        ValidCode.userId,
+        {
+            password: await hashValue(password)
+        }
+    )
+    appAssert(updatedUser, INTERNAL_SERVER_ERROR, "Faild to update user password")
+
+    // delete the verification code
+
+    await ValidCode.deleteOne()
+
+    // delete all sessions
+    await sessionModel.deleteMany({
+        userId: updatedUser._id
+    })
+    // return 
+
+    return {
+        user: updatedUser.omitPassword()
+    }
+
 }

@@ -1,9 +1,9 @@
 import { z } from "zod";
 import catchErrors from "../utils/catchErrors";
-import { createAccount, loginUser, refreshUserAccessToken, sendPasswordResetEmail, verifyEmail } from "../services/auth.service";
+import { createAccount, loginUser, refreshUserAccessToken, resetPassword, sendPasswordResetEmail, verifyEmail } from "../services/auth.service";
 import { CREATED, OK, UNAUTHORIZED } from "../constant/http";
 import { clearAuthCookies, getAccessTokenCookieOptions, getRefreshTokenCookieOptions, setAuthCookie } from "../utils/cookies";
-import { emailSchema, loginSchema, registerSchema, verificationCodeSchema } from "./auth.schemas";
+import { emailSchema, loginSchema, registerSchema, resetPasswordSchema, verificationCodeSchema } from "./auth.schemas";
 import { accessTokenPayload, verifyToken } from "../utils/jwt";
 import sessionModel from "../models/session.model";
 import appAssert from "../utils/appAssert";
@@ -91,3 +91,13 @@ export const sendPasswordResetHandler = catchErrors(async (req, res) => {
         message: "Password reset email sent"
     })
 })
+
+export const resetPasswordHandler = catchErrors(async (req, res) => {
+   const request =  resetPasswordSchema.parse(req.body)
+
+   await resetPassword(request);
+
+    return clearAuthCookies(res).status(OK).json({
+         message: "Password reset successfully"
+    })
+});
