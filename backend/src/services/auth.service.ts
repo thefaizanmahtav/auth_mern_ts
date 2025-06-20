@@ -6,13 +6,14 @@ import verificaltionCodeModel from "../models/verification.model"
 import appAssert from "../utils/appAssert"
 import { CONFLICT, INTERNAL_SERVER_ERROR, NOT_FOUND, TOO_MANY_REQUESTS, UNAUTHORIZED } from "../constant/http"
 import { refershTokenPayload, refreshTokenSingOptions, signToken, verifyToken } from "../utils/jwt"
-import { sendMail } from "../utils/sendMail"
 import { getPasswordResetTemplate, getVerifyEmailTemplate } from "../utils/emailTemplates"
 import { APP_ORIGIN } from "../constant/env"
 import verificationType from "../constant/verificationCodeTypes"
 import { hashValue } from "../utils/bcrypt"
+import { sendEmail } from "../utils/sendMailnodeMailer"
 
 export type createAccountParams = {
+    name: string,
     email: string,
     password: string,
     userAgent?: string
@@ -30,13 +31,8 @@ export const createAccount = async (data: createAccountParams) => {
         !existingUser, CONFLICT, "Email alrady in use"
     )
 
-    // if (existingUser) {
-    //     throw new Error("user alredy exists")
-    // }
-
-    // create user
-
     const user = await userModels.create({
+        name: data.name,
         email: data.email,
         password: data.password
     })
@@ -56,7 +52,7 @@ export const createAccount = async (data: createAccountParams) => {
 
     const url = `${APP_ORIGIN}/email/verify/${verificationCode._id}`
 
-    const { error } = await sendMail({
+    const { error } = await sendEmail({
         to: user.email,
         ...getVerifyEmailTemplate(url)
     })
@@ -64,6 +60,8 @@ export const createAccount = async (data: createAccountParams) => {
     if (error) {
         console.log("error", error);
     }
+
+    console.log("Email sent successfully to", user.email);
 
 
     // create session
@@ -249,12 +247,18 @@ export const sendPasswordResetEmail = async (email: string) => {
 
     // send verification email
     const url = `${APP_ORIGIN}/password/reset?code=${verificationCode._id}&exp=${expiresAt.getTime()}`
-    const { data, error } = await sendMail({
+
+    const { data, error } = await sendEmail({
         to: user.email,
         ...getPasswordResetTemplate(url)
-    })
+    });
 
-    appAssert(data?.id, INTERNAL_SERVER_ERROR, `${error?.name}-${error?.message}`)
+    appAssert(
+        data?.id,
+        INTERNAL_SERVER_ERROR,
+        `${(error && typeof error === "object" && "name" in error ? (error as any).name : "UnknownError")}-${(error && typeof error === "object" && "message" in error ? (error as any).message : "No message")}`
+    );
+
 
     // return success 
     return {
@@ -268,7 +272,7 @@ type ResetPasswordParams = {
     verificationCode: string
 }
 
-export const resetPassword = async ({password, verificationCode}: ResetPasswordParams) => {
+export const resetPassword = async ({ password, verificationCode }: ResetPasswordParams) => {
     // get the verification code
 
     const ValidCode = await verificaltionCodeModel.findOne({

@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-
+const nameSchema = z.string().min(1).max(255);
 export const emailSchema = z.string().email().min(1).max(255);
 const passwordSchema = z.string().min(1).max(255);
 
@@ -11,7 +11,7 @@ export const loginSchema = z.object({
 })
 
 export const registerSchema = loginSchema.extend({
-
+    name: nameSchema,
     confirmPassword: z.string().min(1).max(255),
 }).refine(
     (data) => data.password === data.confirmPassword, {
