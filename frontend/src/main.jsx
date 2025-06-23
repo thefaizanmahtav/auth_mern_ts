@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
+import App from './Dashboard.jsx'
 import './index.css'
 import React from 'react'
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider, Routes } from 'react-router-dom'
@@ -13,14 +13,19 @@ import ForgotPassword from './pages/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import AppContainer from './components/AppContainer.jsx'
 import Profile from './pages/Profile.jsx'
+import Settings from './pages/Settings.jsx'
+import LandingPage from './pages/LandingPage.jsx'
+import Dashboard from './Dashboard.jsx'
 
 
 const router = createBrowserRouter(createRoutesFromElements(
   <>
     <Route path="/" element={<AppContainer />} >
-      <Route index element={<App />} />
+      <Route index element={<Dashboard />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/settings" element={<Settings />} />
     </Route>
+    <Route path="/home" element={<LandingPage />} />
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
     <Route path="/email/verify/:code" element={<VerifyEmails />} />

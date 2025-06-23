@@ -16,14 +16,19 @@ function AppContainer() {
 
     return user ? (
         <>
-            <div className="flex items-baseline m-14 justify-end">
-                <UserMenu />
+            <div className="min-h-screen bg-blue-100 dark:bg-gray-900 flex items-center justify-center p-6">
+                <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 w-full max-w-3xl">
+                    <div className="flex justify-end mb-4">
+                        <UserMenu />
+                    </div>
+                    <Outlet />
+
+                </div>
             </div>
-                <Outlet />
         </>
     ) : (
         <Navigate
-            to="/login"
+            to="/home"
             replace
             state={{ redirectUrl: window.location.pathname }}
         />

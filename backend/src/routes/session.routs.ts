@@ -3,7 +3,7 @@ import { deleteSessionHandler, getSessionHandler } from "../controllers/session.
 
 
 const sessionRoutes = Router();
-// prefix: /session
+// prefix: /sessions
 sessionRoutes.get("/", getSessionHandler);
 sessionRoutes.delete("/:id", deleteSessionHandler);
 

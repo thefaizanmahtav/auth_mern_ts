@@ -36,7 +36,7 @@ function Profile() {
                     className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-md"
                 />
                 <div className="text-center sm:text-left">
-                    <h1 className="text-3xl sm:text-4xl font-bold">User Profile</h1>
+                    <h1 className="text-3xl sm:text-4xl font-bold">{name}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-1">Here’s your account information</p>
                 </div>
             </div>
@@ -63,7 +63,7 @@ function Profile() {
                 <div className="flex items-center space-x-2">
                     <span className="text-purple-600 text-xl">🕒</span>
                     <span className="font-semibold">Joined:</span>
-                    <span>{new Date(createdAt).toLocaleString()}</span>
+                    <span>{new Date(createdAt).toLocaleString("en-US")}</span>
                 </div>
 
                 {/* Optional blank space for layout symmetry */}

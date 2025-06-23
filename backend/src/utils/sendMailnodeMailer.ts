@@ -28,14 +28,14 @@ export async function sendEmail({
 
     const info = await transporter.sendMail({
       from: `"thefaizanmahtav" <${SMTP_USER}>`,
-      to: "khanfaizan56752@gmail.com", // Use the recipient's email
+      to,
       subject,
       text,
       html,
     });
 
     console.log('Email sent:', info.messageId);
-    return { data: { id: info.messageId } }; // ✅ include data
+    return { data: { id: info.messageId } }; 
   } catch (error) {
     return { error };
   }

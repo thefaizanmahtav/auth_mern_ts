@@ -125,8 +125,9 @@ function Register() {
                         type="submit"
                         onClick={handleSubmit((data) => createAccount(data))}
                         disabled={isPending}
-                        className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-                    >Create Account</button>
+                        className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
+                        {isPending ? "Creating Account..." : "Create Account"}
+                    </button>
 
                     <p className="text-md text-center">
                         Already have an account?{" "}

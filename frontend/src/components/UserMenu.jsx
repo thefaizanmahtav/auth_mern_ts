@@ -7,10 +7,11 @@ function UserMenu() {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const next = false;
 
   const { mutate: signOut } = useMutation({
     mutationFn: logout,
-    onSettled: () => navigate('/login', { replace: true }),
+    onSettled: () => navigate('/home', { replace: true }),
   });
 
   const toggleDropdown = () => setIsOpen((prev) => !prev);
@@ -73,6 +74,14 @@ function UserMenu() {
           <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
             <li>
               <button
+                onClick={() => navigate('/')}
+                className="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                Home
+              </button>
+            </li>
+            <li>
+              <button
                 onClick={() => navigate('/profile')}
                 className="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
@@ -81,6 +90,7 @@ function UserMenu() {
             </li>
             <li>
               <button
+                onClick={() => navigate('/settings')}
                 className="w-full text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
                 Settings

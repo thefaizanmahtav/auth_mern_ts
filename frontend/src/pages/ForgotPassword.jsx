@@ -68,8 +68,7 @@ function ForgotPassword() {
                             <button
                                 onClick={handleSubmit((data) => sendPasswordReset(data.email))}
                                 disabled={isPending}
-                                className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition"
-                            >
+                                className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition">
                                 {isPending ? "Sending..." : "Send Reset Link"}
                             </button>
 
